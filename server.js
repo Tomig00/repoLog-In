@@ -1,4 +1,5 @@
 const {options} = require('./public/options/mariaDB')
+const path = require('path')
 const knex = require('knex')(options)
 const sendProd = require('./helper')
 const Contenedor = require('./api')
@@ -46,7 +47,7 @@ app.use(session({
   store: MongoStore.create({
     mongoUrl: 'mongodb+srv://tomasSesiones:asd345@tomi.fuaxu.mongodb.net/sesiones?retryWrites=true&w=majority',
     mongoOptions: advancedOptions,
-    ttl: 10
+    ttl: 30
   }),
   secret: 'secreto',
   resave: true,
@@ -76,15 +77,17 @@ server.on('error', (error) => console.log(`Error en servidor ${error}`))
 //   })
 // })
 
-app.get("/", (req, res) => {
-  if (req.session["nombre"])
+app.get("/hola", (req, res) => {
+   if (req.session["user"])
     return res.sendFile(path.resolve("public/index.html"));
+  console.log("Adentrooo")
   res.sendFile(path.resolve("public/login.html"));
 });
 
 app.post("/login", (req, res) => {
-  const { user } = req.body;
-  if (nombre !== "") {
+  const user = req.body;
+  console.log(`USUARIO ${user}`)
+  if (user !== "") {
     req.session["user"] = user;
     res.sendFile(path.resolve("public/index.html"));
     io.emit("userInfo", user)

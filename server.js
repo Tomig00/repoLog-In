@@ -31,6 +31,7 @@ const io = new IOServer(httpServer)
 
 let messages = []
 let prod = []
+let user
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
@@ -61,44 +62,45 @@ const server = httpServer.listen(PORT , () => console.log(`servidor Levantado ${
 server.on('error', (error) => console.log(`Error en servidor ${error}`))
 
 
-// app.get('/login', (req, res) => {
-//   const username = req.query.user
-//   req.session.user = username
-
-//   res.send('login succes')
-// })
-
-
-
-// app.get('/desLogeo', (req, res) => {
-//   req.session.destroy((err) => {
-//     if (!err) res.send(`Hasta luego ${req.session.user}`)
-//     else res.send({status : 'desLogeo Error', error: err})
-//   })
-// })
-
-app.get("/hola", (req, res) => {
+app.get("/logeo", (req, res) => {
    if (req.session["user"])
     return res.sendFile(path.resolve("public/index.html"));
-  console.log("Adentrooo")
   res.sendFile(path.resolve("public/login.html"));
 });
 
-app.post("/login", (req, res) => {
-  const user = req.body;
-  console.log(`USUARIO ${user}`)
-  if (user !== "") {
-    req.session["user"] = user;
-    res.sendFile(path.resolve("public/index.html"));
-    io.emit("userInfo", user)
-  } else {
-    res.sendFile(path.resolve("public/login.html"));
-  }
+app.get("/index", (req, res) => {
+  if (req.session["user"])
+   return res.sendFile(path.resolve("public/index.html"));
+ res.sendFile(path.resolve("public/login.html"));
 });
+
+app.get("/deslogeo", (req, res) => {
+ res.sendFile(path.resolve("public/logout.html"));
+});
+
+app.post("/login", (req, res) => {
+  user = req.body.user;
+  console.log(user)
+  if(user !== "") {
+    req.session["user"] = user;
+    res.redirect("/index");
+  } 
+  else {
+    res.sendFile(path.resolve("public/login.html"));
+  } 
+});
+
+app.post("/logout", (req, res) => {
+  req.session.destroy((err) => {
+  if (!err) res.redirect("/deslogeo")
+  else res.send({status : 'desLogeo Error', error: err})
+  })
+});
+
 
 io.on('connection', async (socket) => {
   console.log('se conecto un usuario')
-  
+
   async function getMsgOnConnection()
   {
     let mensajes = []
@@ -127,6 +129,15 @@ io.on('connection', async (socket) => {
   prod = await prodF()
   io.sockets.emit('prod', prod);
   
+  async function usuario(user)
+  {
+    return user
+  }
+
+  userName = await usuario(user)
+  console.log(userName)
+  io.sockets.emit('usuarios', userName)
+
   socket.on('new-message',async (data) => {
     async function agregarMsg(data)
     {

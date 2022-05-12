@@ -2,7 +2,7 @@ const express = require('express')
 const routerProductos = express.Router()
 const faker = require('faker')
 faker.locale = 'es'
-const {vehicle, random, image} = faker 
+const {vehicle, finance, image} = faker 
 
 let elemento = {}
 let datos = []
@@ -12,7 +12,7 @@ function productosRandom()
 {
     elemento = {}
     elemento.name = vehicle.manufacturer()
-    elemento.price = random.float({max: 1000000})
+    elemento.price = finance.amount() 
     elemento.thumbnail = image.transport(640,480,true)
     return elemento
 }

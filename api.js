@@ -17,20 +17,6 @@ class Contenedor{
 
     }
 
-    // testFunc()
-    // {
-    //     this.db_.from(this.tabla_).select('*')
-    //     .then((rows) => {
-    //         for (let row of rows){
-    //             console.log(`${row['id']}${row['name']}${row['price']}`)
-    //         }
-
-    //     }).catch((err) => {console.log(err); throw err})
-    //     .finally(() => {
-    //         this.db_.destroy()
-    //     });
-    // }
-    
     addProd(producto)
     {
         this.db_(this.tabla_).insert(producto)

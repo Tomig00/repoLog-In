@@ -5,6 +5,12 @@ socket.on('mensajes', mensajes => {
     render(mensajes)
 })
 
+socket.on('usuarios', userName => {
+    console.log('en socket')
+    console.log(userName)
+    renderUser(userName)
+})
+
 socket.on('productos', prod => {
     crearTabla(prod).then(tabla => {document.getElementById('tablaProducto').innerHTML = tabla})
 })
@@ -14,9 +20,6 @@ socket.on('prod', function (data) {
     crearTabla(data).then(tabla => {document.getElementById('tablaProducto').innerHTML = tabla})
 })
 
-io.on('userInfo', function (data) {
-    renderUser(data)
-})
 
 function crearTabla (prod){
     

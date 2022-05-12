@@ -6,8 +6,6 @@ socket.on('mensajes', mensajes => {
 })
 
 socket.on('usuarios', userName => {
-    console.log('en socket')
-    console.log(userName)
     renderUser(userName)
 })
 

@@ -75,7 +75,8 @@ app.get("/index", (req, res) => {
 });
 
 app.get("/deslogeo", (req, res) => {
- res.sendFile(path.resolve("public/logout.html"));
+  document.getElementById('nameUser').innerHTML = user
+  res.sendFile(path.resolve("public/logout.html"));
 });
 
 app.post("/login", (req, res) => {
